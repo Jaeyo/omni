@@ -73,6 +73,17 @@ const clearActions = () => {
 			{title:"Clear cache", desc:"Clear the cache", type:"action", action:"remove-cache", emoji:true, emojiChar:"🗄", keycheck:false, keys:['⌘','D']},
 			{title:"Clear local storage", desc:"Clear the local storage", type:"action", action:"remove-local-storage", emoji:true, emojiChar:"📦", keycheck:false, keys:['⌘','D']},
 			{title:"Clear passwords", desc:"Clear all saved passwords", type:"action", action:"remove-passwords", emoji:true, emojiChar:"🔑", keycheck:false, keys:['⌘','D']},
+			{title:"Mail: move to NKS", desc:"move current mail to NKS", type:"action", action:"mail-move-nks", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to NKS Ntree", desc:"move current mail to NKS Ntree", type:"action", action:"mail-move-nks-ntree", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to NKS OSS", desc:"move current mail to NKS OSS", type:"action", action:"mail-move-nks-oss", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to RM", desc:"move current mail to RM", type:"action", action:"mail-move-rm", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to RM BTS", desc:"move current mail to RM BTS", type:"action", action:"mail-move-rm-bts", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to RM Ntree", desc:"move current mail to RM Ntree", type:"action", action:"mail-move-rm-ntree", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to RM OSS", desc:"move current mail to RM OSS", type:"action", action:"mail-move-rm-oss", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to Team Common", desc:"move current mail to Team Common", type:"action", action:"mail-move-team-common", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to Trivial", desc:"move current mail to Trivial", type:"action", action:"mail-move-trivial", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to Report", desc:"move current mail to Report", type:"action", action:"mail-move-report", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: delete", desc:"delete current mail", type:"action", action:"mail-delete", emoji:true, emojiChar:"🧹", keycheck:false},
 		];
 
 		if (!isMac) {
@@ -355,6 +366,90 @@ const closeCurrentTab = () => {
 const removeBookmark = (bookmark) => {
 	chrome.bookmarks.remove(bookmark.id);
 }
+const moveMail = (mailbox) => {
+	getCurrentTab().then((response) => {
+		const { id: tabId } = response;
+
+		chrome.scripting.executeScript({
+			args: [ mailbox ],
+			target: { tabId },
+			func: (mailbox) => {
+				const click = (id, children) => {
+					let element = document.getElementById(id)
+					children.forEach(child => {
+						element = element.children[child]
+					})
+					element.click();
+				}
+
+				const clickMove = () => document.getElementById('mailMoveReactLayer')
+					.children[0]
+					.children[2]
+					.children[0]
+					.click();
+
+				// open mail move popup
+				click('listBtnMenu', [0, 5]);
+				switch (mailbox) {
+					case 'delete':
+						click('listBtnMenu', [0, 2, 1]);  // click delete
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'nks':
+						click('mailMoveReactLayer', [0, 1, 5, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'nks-ntree':
+						click('mailMoveReactLayer', [0, 1, 5, 1, 3, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'nks-oss':
+						click('mailMoveReactLayer', [0, 1, 5, 1, 4, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'rm':
+						click('mailMoveReactLayer', [0, 1, 6, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'rm-bts':
+						click('mailMoveReactLayer', [0, 1, 6, 1, 0, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'rm-ntree':
+						click('mailMoveReactLayer', [0, 1, 6, 1, 2, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'rm-oss':
+						click('mailMoveReactLayer', [0, 1, 6, 1, 6, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'team-common':
+						click('mailMoveReactLayer', [0, 1, 7, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'trivial':
+						click('mailMoveReactLayer', [0, 1, 10, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'report':
+						click('mailMoveReactLayer', [0, 1, 11, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+				}
+			},
+		});
+	})
+}
 
 // Receive messages from any tab
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -486,6 +581,39 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			getCurrentTab().then((response) => {
 				chrome.tabs.sendMessage(response.id, {request: "close-omni"});
 			});
+			break;
+		case "mail-move-nks":
+			moveMail('nks');
+			break;
+		case "mail-move-nks-ntree":
+			moveMail('nks-ntree');
+			break;
+		case "mail-move-nks-oss":
+			moveMail('nks-oss');
+			break;
+		case "mail-move-rm":
+			moveMail('rm');
+			break;
+		case "mail-move-rm-bts":
+			moveMail('rm-bts');
+			break;
+		case "mail-move-rm-ntree":
+			moveMail('rm-ntree');
+			break;
+		case "mail-move-rm-oss":
+			moveMail('rm-oss');
+			break;
+		case "mail-move-team-common":
+			moveMail('team-common');
+			break;
+		case "mail-move-trivial":
+			moveMail('trivial');
+			break;
+		case "mail-move-report":
+			moveMail('report');
+			break;
+		case "mail-delete":
+			moveMail('delete');
 			break;
 		}
 });
