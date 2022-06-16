@@ -83,6 +83,7 @@ const clearActions = () => {
 			{title:"Mail: move to Team Common", desc:"move current mail to Team Common", type:"action", action:"mail-move-team-common", emoji:true, emojiChar:"🧹", keycheck:false},
 			{title:"Mail: move to Trivial", desc:"move current mail to Trivial", type:"action", action:"mail-move-trivial", emoji:true, emojiChar:"🧹", keycheck:false},
 			{title:"Mail: move to Report", desc:"move current mail to Report", type:"action", action:"mail-move-report", emoji:true, emojiChar:"🧹", keycheck:false},
+			{title:"Mail: move to Deploy", desc:"move current mail to Deploy", type:"action", action:"mail-move-deploy", emoji:true, emojiChar:"🧹", keycheck:false},
 			{title:"Mail: delete", desc:"delete current mail", type:"action", action:"mail-delete", emoji:true, emojiChar:"🧹", keycheck:false},
 		];
 
@@ -382,12 +383,6 @@ const moveMail = (mailbox) => {
 					element.click();
 				}
 
-				const clickMove = () => document.getElementById('mailMoveReactLayer')
-					.children[0]
-					.children[2]
-					.children[0]
-					.click();
-
 				// open mail move popup
 				click('listBtnMenu', [0, 5]);
 				switch (mailbox) {
@@ -442,6 +437,11 @@ const moveMail = (mailbox) => {
 						break;
 					case 'report':
 						click('mailMoveReactLayer', [0, 1, 11, 0]);  // select mailbox
+						click('mailMoveReactLayer', [0, 2, 0]);  // click move
+						click('list_for_view', [1, 0, 2]);  // open first mail
+						break;
+					case 'deploy':
+						click('mailMoveReactLayer', [0, 1, 8, 0]);  // select mailbox
 						click('mailMoveReactLayer', [0, 2, 0]);  // click move
 						click('list_for_view', [1, 0, 2]);  // open first mail
 						break;
@@ -611,6 +611,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 		case "mail-move-report":
 			moveMail('report');
+			break;
+		case "mail-move-deploy":
+			moveMail('deploy');
 			break;
 		case "mail-delete":
 			moveMail('delete');
